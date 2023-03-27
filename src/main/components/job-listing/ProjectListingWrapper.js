@@ -1,0 +1,22 @@
+import React from 'react';
+import uuid from 'react-uuid';
+import SingleProjectCard from './SingleProjectCard';
+
+const ProjectListingWrapper = ({ allJobData, fetchAllJobs }) => {
+	return (
+		<div className="grid grid-cols-1 lg:grid-cols-2 w-full max-w-7xl m-auto gap-4 sm:gap-6 md:gap-10 ">
+			{allJobData.length === 0 && (
+				<p className="font-semibold text-center py-20 ">No Project Listed</p>
+			)}
+			{allJobData.map((singleJobData) => (
+				<SingleProjectCard
+					singleProjectData={singleJobData}
+					key={uuid()}
+					fetchAllProjects={fetchAllJobs}
+				/>
+			))}
+		</div>
+	);
+};
+
+export default ProjectListingWrapper;

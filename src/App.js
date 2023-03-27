@@ -1,25 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import 'react-quill/dist/quill.snow.css';
+import 'react-toastify/dist/ReactToastify.css';
+import 'react-circular-progressbar/dist/styles.css';
+import { BrowserRouter as Router } from 'react-router-dom';
+import CookieConsentPopUp from './main/components/cookie-consent/CookieConsent';
+import RouteConfig from './navigation/RouteConfig';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<Router>
+			<div className="App h-auto w-screen text-gray-600">
+				<RouteConfig />
+				<CookieConsentPopUp />
+			</div>
+		</Router>
+	);
 }
 
 export default App;
