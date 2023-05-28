@@ -4,12 +4,8 @@ import { AiOutlineCaretDown, AiOutlineLineChart } from 'react-icons/ai';
 import { BsGithub, BsTelephoneFill, BsWindowDock } from 'react-icons/bs';
 import { CgWebsite } from 'react-icons/cg';
 import { FaLinkedin } from 'react-icons/fa';
-import { FiEye, FiMail } from 'react-icons/fi';
-import {
-	HiOutlineDocumentReport,
-	HiOutlineDocumentText,
-	HiOutlineLink,
-} from 'react-icons/hi';
+import { FiMail } from 'react-icons/fi';
+import { HiOutlineDocumentReport, HiOutlineLink } from 'react-icons/hi';
 import { MdInfo, MdLocationPin, MdReport, MdVerified } from 'react-icons/md';
 import { RiMessage3Line } from 'react-icons/ri';
 import { Link, useParams } from 'react-router-dom';
@@ -28,8 +24,6 @@ import CoverLetter from '../job-listing/CoverLetter';
 import RaiseIssueModal from '../job-listing/RaiseIssueModal';
 import SendMailModal from '../job-listing/SendMailModal';
 import ViewAssignmentModal from '../job-listing/ViewAssignmentModal';
-import SonarcloudRequest from './SonarcloudRequest';
-import ReactHtmlParser from 'react-html-parser';
 
 const WebApplicantCard = ({
 	fetchAllApplicants,
@@ -132,16 +126,22 @@ const WebApplicantCard = ({
 
 	const getStatusType = (status) => {
 		if (
-			status === 'SHORTLIST1' ||
-			status === 'SHORTLIST2' ||
-			status === 'MONITOR' ||
-			status === 'ROUND1' ||
-			status === 'ROUND2'
+			status === 'INTERVIEW' ||
+			status === 'SECOND_INTERVIEW' ||
+			status === 'BACKGROUND_CHECK' ||
+			status === 'REFERENCE_CHECK' ||
+			status === 'ASSESSMENT' ||
+			status === 'PHONE_SCREENING' ||
+			status === 'SHORTLISTED' ||
+			status === 'UNDER_REVIEW' ||
+			status === 'ON_HOLD'
 		)
 			return 'warning';
-		if (status === 'REJECT-PD' || status === 'REJECT') return 'error';
-		if (status === 'JOINED' || status === 'AI SELECTED') return 'success';
+		if (status === 'OFFER_DECLINED' || status === 'NOT_SELECTED')
+			return 'error';
+		if (status === 'OFFER_ACCEPTED' || status === 'JOB_OFFER') return 'success';
 	};
+
 	const handleStatusChange = async (val) => {
 		const putData = {
 			id,
@@ -341,7 +341,7 @@ const WebApplicantCard = ({
 							)}
 						</div>
 
-						<h2 className="font-semibold ">Suitable Roles:</h2>
+						{/* <h2 className="font-semibold ">Suitable Roles:</h2>
 
 						<div>
 							{languages_used && (
@@ -382,7 +382,7 @@ const WebApplicantCard = ({
 									</p>
 								</div>
 							)}
-						</div>
+						</div> */}
 						<div className="shadow border p-2 flex flex-col gap-3 mt-1 h-full rounded-2xl">
 							<div className="flex flex-col  gap-1 w-full ">
 								<p className="text-xs text-left capitalize font-semibold">
@@ -662,7 +662,8 @@ const WebApplicantCard = ({
 					<IconButton
 						toolTipTitle={`Change Status`}
 						text={status === null || status === '' ? 'New Applicant' : status}
-						onClick={() => setShowStatusEditModal(true)}
+						//onClick={() => setShowStatusEditModal(true)}
+						onClick={() => null}
 						icon={<AiOutlineCaretDown />}
 						type={getStatusType(status)}
 						align="right"

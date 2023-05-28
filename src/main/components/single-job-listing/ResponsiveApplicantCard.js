@@ -152,15 +152,20 @@ const ResponsiveApplicantCard = ({
 
 	const getStatusType = (status) => {
 		if (
-			status === 'SHORTLIST1' ||
-			status === 'SHORTLIST2' ||
-			status === 'MONITOR' ||
-			status === 'ROUND1' ||
-			status === 'ROUND2'
+			status === 'INTERVIEW' ||
+			status === 'SECOND_INTERVIEW' ||
+			status === 'BACKGROUND_CHECK' ||
+			status === 'REFERENCE_CHECK' ||
+			status === 'ASSESSMENT' ||
+			status === 'PHONE_SCREENING' ||
+			status === 'SHORTLISTED' ||
+			status === 'UNDER_REVIEW' ||
+			status === 'ON_HOLD'
 		)
 			return 'warning';
-		if (status === 'REJECT-PD' || status === 'REJECT') return 'error';
-		if (status === 'JOINED' || status === 'AI SELECTED') return 'success';
+		if (status === 'OFFER_DECLINED' || status === 'NOT_SELECTED')
+			return 'error';
+		if (status === 'OFFER_ACCEPTED' || status === 'JOB_OFFER') return 'success';
 	};
 
 	return (
@@ -301,7 +306,8 @@ const ResponsiveApplicantCard = ({
 						<IconButton
 							toolTipTitle={`Change Status`}
 							text={status === null || status === '' ? 'New Applicant' : status}
-							onClick={() => setShowStatusEditModal(true)}
+							//onClick={() => setShowStatusEditModal(true)}
+							onClick={() => null}
 							icon={<AiOutlineCaretDown />}
 							type={getStatusType(status)}
 							align="right"
@@ -386,7 +392,7 @@ const ResponsiveApplicantCard = ({
 							</div>
 						)}
 					</div>
-
+					{/* 
 					<h2 className="font-semibold ">Suitable Roles:</h2>
 
 					<div>
@@ -428,7 +434,7 @@ const ResponsiveApplicantCard = ({
 								</p>
 							</div>
 						)}
-					</div>
+					</div> */}
 				</div>
 
 				<div className="shadow border max-h-48 p-4 flex w-1/2 flex-col gap-3 mt-1 h-full rounded-2xl">
