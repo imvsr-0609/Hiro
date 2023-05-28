@@ -11,6 +11,7 @@ import ClickWrapper from '../click-wrapper/ClickWrapper';
 import AddApplicantModal from '../self-jobs/AddApplicantModal';
 import ApplicantCard from './ApplicantCard';
 import SingleJobChart from './SingleJobChart';
+import ListingPagination from '../ui-component/ListingPagination';
 
 const JobApplicantsTable = ({
 	data,
@@ -19,6 +20,15 @@ const JobApplicantsTable = ({
 	fetchCreditData,
 	jobId = '',
 	isProcessingJob,
+	page,
+	limit,
+	totalPage,
+	status,
+	search,
+	setSearch,
+	setStatus,
+	setPage,
+	applicantStatus,
 }) => {
 	const [filterApplicantData, setfilterApplicantData] = useState(data);
 	const [showAddApplicantModal, setShowAddApplicantModal] = useState(false);
@@ -30,79 +40,7 @@ const JobApplicantsTable = ({
 		inProgress: 0,
 		rejected: 0,
 	});
-	const navigate = useNavigate();
-	const jobStatus = [
-		'ALL',
-		'SHORTLIST1',
-		'SHORTLIST2',
-		'ROUND1',
-		'ROUND2',
-		'REJECT-PD',
-		'JOINED',
-		'AI SELECTED',
-		'MONITOR',
-		'REJECT',
-	];
-	const filterChange = (text) => {
-		const filteredData = data.filter((user) =>
-			user?.languages_used
-				? user?.name.toUpperCase().includes(text.toUpperCase()) ||
-				  user?.github_profile.toUpperCase().includes(text.toUpperCase()) ||
-				  user?.languages_used.toUpperCase().includes(text.toUpperCase())
-				: user?.name.toUpperCase().includes(text.toUpperCase()) ||
-				  user?.github_profile.toUpperCase().includes(text.toUpperCase()),
-		);
-
-		setfilterApplicantData(filteredData);
-	};
-
-	const onTextChange = (e) => {
-		setApplicantText(e.target.value);
-		filterChange(e.target.value);
-	};
-
-	const handleStatusChange = async (e) => {
-		const val = e.target.value;
-		setFilter(val);
-		if (val === 'ALL') {
-			setfilterApplicantData(data);
-			return;
-		}
-
-		setfilterApplicantData(
-			data.filter(
-				(applicant) =>
-					applicant.status === val.toUpperCase() ||
-					applicant.status === val.toLowerCase(),
-			),
-		);
-	};
-
-	const handleScoreChange = (e) => {
-		setSortVal(e.target.value);
-		const val = e.target.value;
-		switch (val) {
-			case 'none':
-				setfilterApplicantData(data);
-				break;
-			case 'asc':
-				setfilterApplicantData(
-					data.sort((a, b) => a.profile_score - b.profile_score),
-				);
-				break;
-			case 'desc':
-				setfilterApplicantData(
-					data.sort((a, b) => b.profile_score - a.profile_score),
-				);
-				break;
-			default:
-				setfilterApplicantData(data);
-				break;
-		}
-	};
-
 	useEffect(() => {
-		setfilterApplicantData(data);
 		const selected = data.filter(
 			(data) => data.status === 'AI SELECTED' || data.status === 'JOINED',
 		).length;
@@ -143,78 +81,20 @@ const JobApplicantsTable = ({
 					</div>
 					<div className="hidden lg:flex flex-col gap-6  items-end my-4 md:my-8">
 						<TableSearch
-							value={applicantText}
-							onChange={onTextChange}
-							placeholder={'Search Applicants'}
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
+							placeholder={'Search Candidate name / github'}
 						/>
-
-						<div className="flex gap-6 items-center">
-							<div className="p-3  border flex gap-2 items-center bg-blue-50 shadow-md rounded-full">
-								<FiFilter />
-								<select
-									onChange={handleStatusChange}
-									className="outline-none bg-transparent cursor-pointer  border-none text-xs"
-									value={filter}
-								>
-									{jobStatus.map((status) => (
-										<option key={uuid()} value={status}>
-											{status}
-										</option>
-									))}
-								</select>
-							</div>
-							<div className="p-3  border flex gap-2 items-center bg-orange-50 shadow-md rounded-full">
-								<BiSort />
-								<select
-									onChange={handleScoreChange}
-									className="outline-none bg-transparent  cursor-pointer  border-none text-xs"
-									value={sortVal}
-								>
-									<option value={'none'}>None</option>
-									<option value={'asc'}>Ascending</option>
-									<option value={'desc'}>Descending</option>
-								</select>
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
 
 			<div className="flex lg:hidden flex-col gap-6  items-end my-4 md:my-8">
 				<TableSearch
-					value={applicantText}
-					onChange={onTextChange}
-					placeholder={'Search Applicants'}
+					value={search}
+					onChange={(e) => setSearch(e.target.value)}
+					placeholder={'Search Candidate name / github'}
 				/>
-
-				<div className="flex gap-6 items-center">
-					<div className="p-3  border flex gap-2 items-center bg-blue-50 shadow-md rounded-full">
-						<FiFilter />
-						<select
-							onChange={handleStatusChange}
-							className="outline-none bg-transparent cursor-pointer  border-none text-xs"
-							value={filter}
-						>
-							{jobStatus.map((status) => (
-								<option key={uuid()} value={status}>
-									{status}
-								</option>
-							))}
-						</select>
-					</div>
-					<div className="p-3  border flex gap-2 items-center bg-orange-50 shadow-md rounded-full">
-						<BiSort />
-						<select
-							onChange={handleScoreChange}
-							className="outline-none bg-transparent  cursor-pointer  border-none text-xs"
-							value={sortVal}
-						>
-							<option value={'none'}>None</option>
-							<option value={'asc'}>Ascending</option>
-							<option value={'desc'}>Descending</option>
-						</select>
-					</div>
-				</div>
 			</div>
 			{isProcessingJob && (
 				<div className="flex justify-end">
@@ -255,7 +135,7 @@ const JobApplicantsTable = ({
 							fetchAllApplicants={fetchAllApplicants}
 							data={applicantData}
 							idx={idx}
-							jobStatus={jobStatus}
+							applicantStatus={applicantStatus}
 						/>
 					))}
 			</div>
@@ -267,6 +147,11 @@ const JobApplicantsTable = ({
 					</p>
 				</Fragment>
 			)}
+			<ListingPagination
+				page={page}
+				onPageChange={(val) => setPage(val)}
+				count={totalPage}
+			/>
 		</div>
 	);
 };

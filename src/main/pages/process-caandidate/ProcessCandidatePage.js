@@ -18,14 +18,18 @@ const ProcessCandidatePage = () => {
 	const [currentJobData, setCurrentJobData] = useState({});
 	const [singleJobData, setSingleJobData] = useState([]);
 	const [allSkills, setAllSkills] = useState([]);
+	const [loading, setLoading] = useState(true);
 	const [tnc, setTnc] = useState(false);
-
+	const [totalPage, setTotalPage] = useState(0);
+	const [page, setPage] = useState(1);
+	const [limit, setLimit] = useState(10);
 	const [showOptionScreen, setShowOptionScreen] = useState(true);
-
+	const [search, setSearch] = useState('');
 	const [secretKey, setSecretKey] = useState('');
 	const { checkJobExist } = EndPoints.createProfile;
 	const { getJobListing } = EndPoints.jobListing;
 	const { postJob } = EndPoints.createJob;
+	const [loadingSearch, setLoadingSearch] = useState(false);
 
 	const [profileValue, setProfileValue] = useState({
 		user_id: 16,
@@ -74,17 +78,26 @@ const ProcessCandidatePage = () => {
 		}
 	};
 
-	const fetchSingleJobData = async (jobID) => {
+	const fetchSingleJobApplicants = async (jobID) => {
 		try {
-			const res = await Promise.all([
-				axiosInstance.get(`${getJobListing}/getjobapplicants?job_id=${jobID}`),
-			]);
-			const parsedData = res.map((res) => JSON.parse(res.data.body).message);
+			const { data } = await axiosInstance.get(
+				`${getJobListing}/getjobapplicants?job_id=${jobID}&page=${page}&limit=${limit}&status=${'ALL'}&search=${search}`,
+			);
 
-			setSingleJobData(parsedData[0]);
+			const parsedData = JSON.parse(data.body);
+
+			setSingleJobData(parsedData.message);
+			setTotalPage(parsedData.total_pages);
+
+			setLoading(false);
 		} catch (err) {
 			console.log(err.message);
 		}
+	};
+
+	const applySearchFilter = async (jobID) => {
+		setPage(1);
+		fetchSingleJobApplicants(jobID);
 	};
 
 	const fetchAllSkills = async () => {
@@ -101,7 +114,7 @@ const ProcessCandidatePage = () => {
 
 	const refetchData = (jobID) => {
 		fetchJobData(jobID);
-		fetchSingleJobData(jobID);
+		fetchSingleJobApplicants(jobID);
 	};
 
 	useEffect(() => {
@@ -112,11 +125,24 @@ const ProcessCandidatePage = () => {
 				setIsLoading(false);
 			} else {
 				fetchJobData(jobID);
-				fetchSingleJobData(jobID);
+				fetchSingleJobApplicants(jobID);
 				// fetchAllSkills();
 			}
 		}
-	}, [showOptionScreen]);
+	}, [showOptionScreen, page, limit]);
+
+	useEffect(() => {
+		if (search.length > 0) {
+			setLoadingSearch(true);
+		} else setLoadingSearch(false);
+
+		const jobSearchTimeout = setTimeout(() => {
+			applySearchFilter(createdJobId === '' ? enteredJobId : createdJobId);
+		}, 2000);
+		return () => {
+			clearTimeout(jobSearchTimeout);
+		};
+	}, [search]);
 
 	const handleCreateJob = async (e) => {
 		e.preventDefault();
@@ -266,6 +292,12 @@ const ProcessCandidatePage = () => {
 								jobID={createdJobId === '' ? enteredJobId : createdJobId}
 								setActiveStep={setActiveStep}
 								activeStep={activeStep}
+								page={page}
+								limit={limit}
+								totalPage={totalPage}
+								search={search}
+								setSearch={setSearch}
+								setPage={setPage}
 							/>
 						)}
 					</div>

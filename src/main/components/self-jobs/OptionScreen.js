@@ -132,7 +132,7 @@ const OptionScreen = ({
 								autoplay
 							></lottie-player>
 						</div>
-						<h1 className="text-center bg-green-400 text-white text-sm absolute bottom-0 inset-x-0 px-6 py-4 font-bold ">
+						<h1 className="text-center bg-green-400 text-white text-sm absolute bottom-0 inset-x-0 px-6 py-4 font-bold tracking-wider ">
 							Manage Existing Job
 						</h1>
 					</div>

@@ -2,10 +2,11 @@ import React, { Fragment } from 'react';
 import { IoPersonAdd } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import uuid from 'react-uuid';
-import { JOB_LISTING_PAGE } from '../../../navigation/routes';
 import IconButton from '../../ui-component/buttons/IconButton';
-import { applicantHeaderData } from './data';
+import ListingPagination from '../ui-component/ListingPagination';
+import TableSearch from '../ui-component/TableSearch';
 import SingleAddApplicantTable from './SingleAddApplicantTable';
+import { applicantHeaderData } from './data';
 
 const ApplicantAdditionTable = ({
 	applicantsData,
@@ -13,10 +14,16 @@ const ApplicantAdditionTable = ({
 	isAdmin = false,
 	activeStep,
 	setActiveStep,
+	page,
+	limit,
+	totalPage,
+	search,
+	setSearch,
+	setPage,
 }) => {
 	const navigate = useNavigate();
 	return (
-		<div className="flex flex-col  py-10 items-end">
+		<div className="flex flex-col gap-6  py-10 items-end">
 			{!isAdmin && (
 				<IconButton
 					toolTipTitle={'Add Applicants'}
@@ -26,7 +33,11 @@ const ApplicantAdditionTable = ({
 					type="primary"
 				/>
 			)}
-
+			<TableSearch
+				value={search}
+				onChange={(e) => setSearch(e.target.value)}
+				placeholder={'Search Candidate name / github'}
+			/>
 			<div className="overflow-x-scroll w-full mt-10">
 				<table className={`p-4 w-full rounded-2xl  shadow-custom bg-white`}>
 					<tbody className="text-xs xl:text-sm rounded-lg ">
@@ -56,6 +67,11 @@ const ApplicantAdditionTable = ({
 						</p>
 					</Fragment>
 				)}
+				<ListingPagination
+					page={page}
+					onPageChange={(val) => setPage(val)}
+					count={totalPage}
+				/>
 			</div>
 			<button
 				onClick={() => navigate(`/job-listing/${jobID}`)}
