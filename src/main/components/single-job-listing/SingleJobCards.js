@@ -114,10 +114,8 @@ const JobApplicantsTable = ({
 						<ClickWrapper func={() => {}}>
 							<AddApplicantModal
 								refetchData={fetchAllApplicants}
-								close={() => {
-									fetchAllApplicants();
-									setShowAddApplicantModal(false);
-								}}
+								close={() => setShowAddApplicantModal(false)}
+								jobID={jobId}
 								isModal
 							/>
 						</ClickWrapper>

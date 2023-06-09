@@ -20,6 +20,13 @@ const AddApplicantModal = ({
 		close();
 	};
 
+	const handleModalClose = () => {
+		if (addedApplicants.length > 0) {
+			refetchData();
+		}
+		close();
+	};
+
 	return (
 		<Fragment>
 			<ToastContainer
@@ -58,8 +65,9 @@ const AddApplicantModal = ({
 				)}
 
 				<button
-					onClick={() => (isModal ? close() : handleButtonClick())}
-					className="p-3 px-5 self-end bg-yellow-500 text-white rounded-xl w-32 text-sm font-semibold "
+					onClick={() => (isModal ? handleModalClose() : handleButtonClick())}
+					disabled={isModal && addedApplicants.length === 0}
+					className="p-3 px-5 self-end bg-yellow-500 disabled:bg-gray-200 disabled:text-gray-500 text-white rounded-xl w-32 text-sm font-semibold "
 				>
 					{isModal ? 'Finish' : 'Continue'}
 				</button>
