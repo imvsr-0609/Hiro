@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useParams } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -84,7 +84,7 @@ const SingleJobPage = () => {
 	const { getJobListing } = EndPoints.jobListing;
 	const { checkJobExist } = EndPoints.createProfile;
 
-	const getJobStatus = async () => {
+	const getJobStatus = useCallback(async () => {
 		try {
 			const { data } = await axiosInstance.get(
 				`${checkJobExist}/getjobstatus?job_id=${jobId}`,
@@ -94,9 +94,9 @@ const SingleJobPage = () => {
 				setIsProcessingJob(true);
 			}
 		} catch (err) {}
-	};
+	}, [checkJobExist, jobId]);
 
-	const fetchSingleJobApplicants = async () => {
+	const fetchSingleJobApplicants = useCallback(async () => {
 		try {
 			const { data } = await axiosInstance.get(
 				`${getJobListing}/getjobapplicants?job_id=${jobId}&page=${page}&limit=${limit}&status=${'ALL'}&search=${search}`,
@@ -111,7 +111,7 @@ const SingleJobPage = () => {
 		} catch (err) {
 			console.log(err.message);
 		}
-	};
+	}, [getJobListing, jobId, limit, page, search]);
 
 	const applySearchFilter = async () => {
 		setLoadingSearch(true);
@@ -121,11 +121,11 @@ const SingleJobPage = () => {
 
 	useEffect(() => {
 		getJobStatus();
-	}, []);
+	}, [getJobStatus]);
 
 	useEffect(() => {
 		fetchSingleJobApplicants();
-	}, [page, limit]);
+	}, [page, limit, fetchSingleJobApplicants]);
 
 	useEffect(() => {
 		if (search.length > 0) {

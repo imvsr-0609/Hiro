@@ -1,17 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { BiSort } from 'react-icons/bi';
-import { FiFilter } from 'react-icons/fi';
 import { IoPersonAdd } from 'react-icons/io5';
-import { useNavigate } from 'react-router-dom';
 import uuid from 'react-uuid';
-import { PROCESS_CANDIDATE_PAGE } from '../../../navigation/routes';
 import IconButton from '../../ui-component/buttons/IconButton';
 import TableSearch from '../../ui-component/inputs/TableSearch';
 import ClickWrapper from '../click-wrapper/ClickWrapper';
 import AddApplicantModal from '../self-jobs/AddApplicantModal';
+import ListingPagination from '../ui-component/ListingPagination';
 import ApplicantCard from './ApplicantCard';
 import SingleJobChart from './SingleJobChart';
-import ListingPagination from '../ui-component/ListingPagination';
 
 const JobApplicantsTable = ({
 	data,
@@ -41,6 +37,7 @@ const JobApplicantsTable = ({
 		rejected: 0,
 	});
 	useEffect(() => {
+		setfilterApplicantData(data);
 		const selected = data.filter(
 			(data) => data.status === 'AI SELECTED' || data.status === 'JOINED',
 		).length;
